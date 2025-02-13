@@ -45,14 +45,16 @@ const register = (e) => {
   if (!validateEmail(email))
     return alert("Please enter a valid email address.");
   if (!validatePassword(password))
-    return alert("Password must be at least 8 characters long.");
+    return alert(
+      "Password must be at least 8 characters long and contain at least one letter and one number."
+    );
 
   if (users.some((user) => user.email === email)) {
     alert("Email is already registered.");
     return;
   }
 
-  users.push({ name, email }); // No password stored!
+  users.push({ name, email, password: hashPassword(password) });
   localStorage.setItem("users", JSON.stringify(users));
 
   alert("Registration successful! Please log in.");
@@ -70,7 +72,9 @@ const login = (e) => {
     return alert("Please enter a valid email address.");
   if (!validatePassword(password)) return alert("Invalid password format.");
 
-  const user = users.find((user) => user.email === email);
+  const user = users.find(
+    (user) => user.email === email && user.password === hashPassword(password)
+  );
 
   if (user) {
     localStorage.setItem("currentUser", JSON.stringify(user));
